@@ -1,0 +1,15 @@
+import React from 'react'
+import './buynow.css'
+const Right = () => {
+  return (
+    <div className="right_buy">
+    <img src="https://images-eu.ssl-images-amazon.com/images/G/31/checkout/assets/TM_desktop._CB443006202_.png" alt="rightimg" />
+    <div className="cost_right">
+        <p>Your order is eligible for FREE Delivery. <br />
+            <span style={{ color: "#565959" }}> Select this option at checkout. Details</span></p>
+    </div>
+</div>
+  )
+}
+
+export default Right
