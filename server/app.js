@@ -1,8 +1,17 @@
-import express from 'express'
+import express, { urlencoded } from 'express'
 import dotenv from 'dotenv'
 dotenv.config()
+import connectTodb from './db/conn.js'
+import cors from 'cors'
 const app=express()
-const port=8005
-app.listen(8005,()=>{
+import DefaultData from './defaultdata.js'
+import userRoutes from './routes/router.js'
+app.use(express.json())
+app.use(cors())
+app.use(userRoutes)
+app.listen(process.env.PORT,()=>{
+    connectTodb()
     console.log('server is running on port 8005')
 })
+DefaultData()
+export default app;
