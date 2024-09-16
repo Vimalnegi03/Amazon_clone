@@ -29,7 +29,9 @@ const Buynow = () => {
         <Divider/>
         <Subtotal/>
         </div>
-        <Right/>
+        <div className="right_buy">
+          <Right/>
+        </div>
       </div>
     </div>
   )

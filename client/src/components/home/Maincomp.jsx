@@ -1,8 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Banner from './Banner'
 import "./home.css"
 import Slide from './Slide'
+import { getProducts } from '../redux/actions/action'
+import { useDispatch,useSelector } from 'react-redux'
 const Maincomp = () => {
+const {products}=useSelector(state=>state.getproductsdata)
+const dispatch=useDispatch()
+useEffect(()=>{
+  dispatch(getProducts())
+},[dispatch])
+console.log(products);
   return (
     <div>
       <div className="home_section">
@@ -12,7 +20,7 @@ const Maincomp = () => {
      
       <div className="slide_part">
                     <div className="left_slide">
-                    <Slide title="Deal of the day"/>
+                    <Slide title="Deal of the day" products={products}/>
                     </div>
                     <div className="right_slide">
                         <h4>Festive latest launches</h4>
@@ -20,11 +28,11 @@ const Maincomp = () => {
                         <a href="#">see more</a>
                     </div>
                     </div>
-                    <Slide title="Todays deal"/>
+                    <Slide title="Todays deal" products={products}/>
                     <div className="center_img">
                     <img src="https://m.media-amazon.com/images/G/31/AMS/IN/970X250-_desktop_banner.jpg" alt="" />
                 </div>
-                    <Slide title="Best seller"/>        
+                    <Slide title="Best seller" products={products}/>        
       </div>
     </div>
   )
