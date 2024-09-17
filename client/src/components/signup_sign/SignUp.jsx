@@ -2,6 +2,9 @@ import React from 'react'
 import "./signup.css";
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const SignUp = () => {
     const [udata,setUdata]=useState({fname:"",
         email:"",
@@ -18,6 +21,41 @@ const SignUp = () => {
         }
     })
   }
+  const senddata = async (e) => {
+    e.preventDefault();
+
+    const { fname, email, mobile, password, cpassword } = udata;
+    try {
+        const res = await fetch("http://localhost:8085/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                fname, email, mobile, password, cpassword
+            })
+        });
+
+        const data = await res.json();
+        // console.log(data);
+
+        if (res.status === 422 || !data) {
+            toast.error("Invalid Details 👎!", {
+                position: "top-center"
+            });
+        } else {
+            setUdata({
+                ...udata, fname: "", email: "",
+                mobile: "", password: "", cpassword: ""
+            });
+            toast.success("Registration Successfully done 😃!", {
+                position: "top-center"
+            });
+        }
+    } catch (error) {
+        console.log("front end ka catch error hai" + error.message);
+    }
+}
   return (
 
     <section>
@@ -63,7 +101,7 @@ const SignUp = () => {
                        onChange={adddata}
                         id="passwordg" />
                 </div>
-                <button type="submit" className="signin_btn">Continue</button>
+                <button type="submit" className="signin_btn" onClick={senddata}>Continue</button>
 
                 
 
@@ -73,7 +111,7 @@ const SignUp = () => {
                 </div>
             </form>
         </div>
-       
+        <ToastContainer/>
     </div>
 </section>
   )
