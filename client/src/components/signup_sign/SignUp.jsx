@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { url } from '../url';
 const SignUp = () => {
     const [udata,setUdata]=useState({fname:"",
         email:"",
@@ -26,7 +26,7 @@ const SignUp = () => {
 
     const { fname, email, mobile, password, cpassword } = udata;
     try {
-        const res = await fetch("http://localhost:8085/register", {
+        const res = await fetch(`${url}/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

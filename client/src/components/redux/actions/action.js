@@ -1,6 +1,7 @@
+import { url } from "../../url";
 export const getProducts=()=>async(dispatch)=>{
     try {
-    const data=await fetch("http://localhost:8085/getproducts",{
+    const data=await fetch(`${url}/getproducts`,{
         method:"GET",
         headers:{
             "Content-Type":"application/json",

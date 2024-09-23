@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+dotenv.config()
+const keysecret = process.env.KEY
+console.log("our secret is " + keysecret);
 const userSchema = new mongoose.Schema({
     fname: {
         type: String,
@@ -49,5 +54,40 @@ userSchema.pre("save", async function (next) {
     }
     next();
 });
+
+userSchema.methods.generatAuthtoken = async function(){
+    try {
+        let token = jwt.sign({ _id:this._id},keysecret,{
+            expiresIn:"1d"
+            
+        });
+        this.tokens = this.tokens.concat({token:token});
+        await this.save();
+        return token;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+// addto cart data
+userSchema.methods.addcartdata = async function(cart){
+    try {
+        this.carts = this.carts.concat(cart);
+        await this.save();
+        return this.carts;
+    } catch (error) {
+        console.log(error + "bhai cart add time aai error");
+    }
+}
+// addto cart data
+userSchema.methods.addcartdata = async function(cart){
+    try {
+        this.carts = this.carts.concat(cart);
+        await this.save();
+        return this.carts;
+    } catch (error) {
+        console.log(error + "bhai cart add time aai error");
+    }
+}
 const User = new mongoose.model("USER", userSchema);
 export default User

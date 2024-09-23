@@ -3,11 +3,12 @@ import React, { useEffect,useState } from 'react'
 import { useParams } from 'react-router-dom'
 import CircularProgress from '@mui/material/CircularProgress';
 import './cart.css'
+import { url } from '../url';
 const Cart = () => {
  const {id}=useParams("")
  const [inddata,setInddata]=useState([])
  const getinddata=async()=>{
-    const res=await fetch(`http://localhost:8085/getproductsone/${id}`,{
+    const res=await fetch(`${url}/getproductsone/${id}`,{
         method:"GET",
         headers:{
         "Content-Type":"application/json"

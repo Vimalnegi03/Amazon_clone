@@ -5,10 +5,13 @@ import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import store from './store.js'
 import { Provider } from 'react-redux'
+import Contextprovider from './components/context/Contextprovider.jsx'
 createRoot(document.getElementById('root')).render(
+  <Contextprovider>
   <Provider store={store}>
   <BrowserRouter>
     <App />
   </BrowserRouter>
-  </Provider>,
+  </Provider>
+  </Contextprovider>,
 )
