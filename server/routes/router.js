@@ -108,8 +108,48 @@ router.post("/login", async (req, res) => {
         console.log("error the bhai catch ma for login time" + error.message);
     }
 });
+// getindividual
+
+router.get("/getproductsone/:id", async (req, res) => {
+
+    try {
+        const { id } = req.params;
+        console.log(id);
+
+        const individual = await Products.findOne({ id: id });
+        console.log(individual + "ind mila hai");
+
+        res.status(201).json(individual);
+    } catch (error) {
+        res.status(400).json(error);
+    }
+});
+
+// adding the data into cart
+router.post("/addcart/:id", authenicate, async (req, res) => {
+
+    try {
+        console.log("perfect 6");
+        const { id } = req.params;
+        const cart = await Products.findOne({ id: id });
+        console.log(cart + "cart milta hain");
+
+        const Usercontact = await User.findOne({ _id: req.userID });
+        console.log(Usercontact + "user milta hain");
 
 
+        if (Usercontact) {
+            const cartData = await Usercontact.addcartdata(cart);
+
+            await Usercontact.save();
+            console.log(cartData + " thse save wait kr");
+            console.log(Usercontact + "userjode save");
+            res.status(201).json(Usercontact);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+});
 export default router;
 
 
