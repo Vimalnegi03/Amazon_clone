@@ -58,8 +58,7 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.generatAuthtoken = async function(){
     try {
         let token = jwt.sign({ _id:this._id},keysecret,{
-            expiresIn:"1d"
-            
+            expiresIn:"1d" 
         });
         this.tokens = this.tokens.concat({token:token});
         await this.save();
@@ -70,13 +69,15 @@ userSchema.methods.generatAuthtoken = async function(){
     }
 }
 // addto cart data
-userSchema.methods.addcartdata = async function(cart){
+userSchema.methods.addcartdata = async function(cart) {
     try {
+        // Add the new cart item to the user's carts array
         this.carts = this.carts.concat(cart);
         await this.save();
-        return this.carts;
+        return this.carts; // Return the updated carts array
     } catch (error) {
-        console.log(error + "bhai cart add time aai error");
+        console.log("Error adding to cart: ", error);
+        throw new Error("Error occurred while adding to the cart");
     }
 }
 

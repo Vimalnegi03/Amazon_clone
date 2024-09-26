@@ -4,7 +4,8 @@ import Products from '../models/productsSchema.js'
 import User from '../models/userSchema.js';
 import bcrypt from 'bcryptjs'
 import authenicate from '../middleware/authenticate.js';
-
+import dotenv from 'dotenv';
+dotenv.config()
 
 //get all products
 router.get("/getproducts", async (req, res) => {
@@ -93,8 +94,10 @@ router.post("/login", async (req, res) => {
                 console.log(token);
 
                 res.cookie("eccomerce", token, {
-                    expires: new Date(Date.now() + 2589000),
-                    httpOnly: true
+                    httpOnly: true, // Secure and inaccessible by JavaScript
+                    secure: false,// Only send the cookie over HTTPS
+                    sameSite: 'None', // Needed for cross-origin requests
+                    
                 });
                 res.status(201).json(userlogin);
             }
@@ -127,29 +130,98 @@ router.get("/getproductsone/:id", async (req, res) => {
 
 // adding the data into cart
 router.post("/addcart/:id", authenicate, async (req, res) => {
-
     try {
-        console.log("perfect 6");
         const { id } = req.params;
-        const cart = await Products.findOne({ id: id });
-        console.log(cart + "cart milta hain");
 
-        const Usercontact = await User.findOne({ _id: req.userID });
-        console.log(Usercontact + "user milta hain");
-
-
-        if (Usercontact) {
-            const cartData = await Usercontact.addcartdata(cart);
-
-            await Usercontact.save();
-            console.log(cartData + " thse save wait kr");
-            console.log(Usercontact + "userjode save");
-            res.status(201).json(Usercontact);
+        // Find the product by ID
+        const cart = await Products.findOne( {id} );
+        if (!cart) {
+            return res.status(404).json({ message: "Product not found" });
         }
+        console.log(cart + " - Product found");
+
+        // Find the user by ID (from middleware)
+        const Usercontact = await User.findOne({ _id: req.userID });
+        if (!Usercontact) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        console.log(Usercontact + " - User found");
+
+        // Add product to user's cart
+        const cartData = await Usercontact.addcartdata(cart);
+        console.log(cartData + " - Cart updated");
+
+        // Send the updated user (with cart data) back to the client
+        res.status(201).json(Usercontact);
     } catch (error) {
-        console.log(error);
+        console.error("Error adding to cart:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
+
+
+// get data into the cart
+router.get("/cartdetails", authenicate, async (req, res) => {
+    try {
+        const buyuser = await User.findOne({ _id: req.userID });
+        console.log(buyuser + "user hain buy pr");
+        res.status(201).json(buyuser);
+    } catch (error) {
+        console.log(error + "error for buy now");
+    }
+});
+
+
+// get user is login or not
+router.get("/validuser", authenicate, async (req, res) => {
+    try {
+        const validuserone = await User.findOne({ _id: req.userID });
+        console.log(validuserone + "user hain home k header main pr");
+        res.status(201).json(validuserone);
+    } catch (error) {
+        console.log(error + "error for valid user");
+    }
+});
+
+// for userlogout
+
+router.get("/logout", authenicate, async (req, res) => {
+    try {
+        req.rootUser.tokens = req.rootUser.tokens.filter((curelem) => {
+            return curelem.token !== req.token
+        });
+
+        res.clearCookie("eccomerce", { path: "/" });
+        req.rootUser.save();
+        res.status(201).json(req.rootUser.tokens);
+        console.log("user logout");
+
+    } catch (error) {
+        console.log(error + "jwt provide then logout");
+    }
+});
+
+// item remove ho rhi hain lekin api delete use krna batter hoga
+// remove iteam from the cart
+
+router.get("/remove/:id", authenicate, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        req.rootUser.carts = req.rootUser.carts.filter((curel) => {
+            return curel.id != id
+        });
+
+        req.rootUser.save();
+        res.status(201).json(req.rootUser);
+        console.log("iteam remove");
+
+    } catch (error) {
+        console.log(error + "jwt provide then remove");
+        res.status(400).json(error);
+    }
+});
+
 export default router;
 
 

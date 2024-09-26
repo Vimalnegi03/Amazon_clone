@@ -10,6 +10,7 @@ import { Logincontext } from "../context/Contextprovider";
 const Cart = () => {
     const { id } = useParams();
     const { account, setAccount } = useContext(Logincontext);
+    console.log(account);
     const navigate = useNavigate(); // updated to useNavigate
 
     const [inddata, setInddata] = useState("");
@@ -49,6 +50,7 @@ const Cart = () => {
         });
 
         const data1 = await check.json();
+        console.log(data1);
         if (check.status !== 201) {
             alert("No data available");
         } else {

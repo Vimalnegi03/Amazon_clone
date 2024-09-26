@@ -1,27 +1,40 @@
-import jwt from 'jsonwebtoken'
-import User from '../models/userSchema.js'
-const keysecret=process.env.KEY
-const authenicate = async(req,res,next)=>{
+import jwt from 'jsonwebtoken';
+import User from '../models/userSchema.js';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const keysecret = process.env.KEY;
+console.log(keysecret);
+const authenicate = async (req, res, next) => {
     try {
         const token = req.cookies.eccomerce;
         
-        const verifyToken = jwt.verify(token,keysecret);
-     
-        const rootUser = await User.findOne({_id:verifyToken._id,"tokens.token":token});
-       
+        if (!token) {
+            return res.status(401).json({
+                status: "error",
+                message: "Unauthorized: No token provided",
+            });
+        }
 
-        if(!rootUser){ throw new Error("User Not Found") };
+        const verifyToken = jwt.verify(token, keysecret);
+        const rootUser = await User.findOne({ _id: verifyToken._id, "tokens.token": token });
 
-        req.token = token; 
-        req.rootUser = rootUser;   
-        req.userID = rootUser._id;   
-    
-        next();  
+        if (!rootUser) {
+            throw new Error("User Not Found");
+        }
 
+        req.token = token;
+        req.rootUser = rootUser;
+        req.userID = rootUser._id;
 
+        next();
     } catch (error) {
-        res.status(401).send("Unauthorized:No token provided");
-        console.log(error);
+        console.error("Authentication error:", error);
+        res.status(401).json({
+            status: "error",
+            message: "Unauthorized: No token provided",
+        });
     }
 };
-export default authenicate
+
+export default authenicate;

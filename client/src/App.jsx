@@ -10,11 +10,14 @@ import Sign_in from './components/signup_sign/Sign_in'
 import Cart from './components/cart/Cart'
 import Buynow from './components/buynow/Buynow'
 import {Routes,Route} from 'react-router-dom'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
+    
    <Navbar/>
    <Newnav/>
    <Routes>
@@ -25,6 +28,8 @@ function App() {
     <Route path="/buynow" element={<Buynow/>}/>
    </Routes>
    <Footer/>
+    <ToastContainer />
+   
     </>
   )
 }
