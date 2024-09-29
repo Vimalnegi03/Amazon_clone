@@ -30,5 +30,5 @@ This project is a fully functional e-commerce website designed to mimic the feat
    git clone https://github.com/yourusername/amazon-clone.git
    cd amazon-clone
 ```
-
+Made with love Vimal Negi-:
 
